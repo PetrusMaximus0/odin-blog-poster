@@ -1,9 +1,11 @@
-function App() {
+export default function App() {
   return (
     <>
-      <div className="text-5xl">TEXT</div>
+      <header>header</header>
+      <main>
+        welcome
+      </main>
+      <footer>footer</footer>
     </>
   )
 }
-
-export default App
