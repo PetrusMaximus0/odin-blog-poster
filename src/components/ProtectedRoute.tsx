@@ -18,7 +18,7 @@ const ProtectedRoute = () => {
             return data;            
         }
 
-        const token = JSON.parse(localStorage.getItem("login-token") as string);
+        const token = localStorage.getItem("login-token");
         if (token !== null) {
             //There is a token, attempt to verify token.
             fetchUser(token)
