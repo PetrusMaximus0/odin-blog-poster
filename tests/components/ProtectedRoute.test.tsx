@@ -6,35 +6,46 @@ import { Mock } from "vitest";
 
 describe("ProtectedRoute", () => {
     it("renders a loading page while the fetch request in ongoing", async () => {
+        // 
         global.fetch = vi.fn(() => new Promise(() => {})) as Mock;
-        const router = createMemoryRouter(routes, { initialEntries: ["/"] });
+        
+        //
         localStorage.setItem("login-token", "anytoken");
+        
+        //
+        const router = createMemoryRouter(routes, { initialEntries: ["/"] });
         await act(async () => { 
             render(<RouterProvider router={router} />);
         });
      
+        //
         expect(fetch).toHaveBeenCalled();
         expect(screen.getByText(/loading/i)).toBeInTheDocument();
-        
-        screen.debug();
-        localStorage.clear();
+    
+
     })
 
     describe("No token provided in the request", () => {
         it("renders login form, skips fetching user", async () => {
-        global.fetch = vi.fn();
+            //
+            global.fetch = vi.fn();
+           
+            //
             const router = createMemoryRouter(routes, { initialEntries: ["/"] });        
             await act(async () => {  
                 render(<RouterProvider router={router} />)
             })
+           
+            //
             expect(fetch).not.toHaveBeenCalled();
             expect(screen.queryByRole("form", { name: "login-form" })).toBeInTheDocument();
-            screen.debug();
+            
         })
     })
         
     describe("Request provided a token", () => {
         it("does not render the login form if the token is valid", async () => {
+            //
             const user: IUser = {
                 "posts": [],
                 "_id": "userid",
@@ -59,20 +70,23 @@ describe("ProtectedRoute", () => {
             //
             await act(async () => {
                 render(<RouterProvider router={router} />)
-            })            
+            })         
+            
+            //
             expect(fetch).toHaveBeenCalled();
             expect(screen.queryByRole("form", { name: "login-form" })).not.toBeInTheDocument();
-            screen.debug();
             
-            localStorage.clear();
         })
        
         it("redirects to the login page when the token is invalid or expired", async () => {            
+            
+            //
             global.fetch = vi.fn(() => {
                 return Promise.resolve({
                     json: () => Promise.resolve({})
                 })
             }) as Mock;
+
             //
             const invalidToken = "adsasd.asdasd.asdasda23123";
             localStorage.setItem("login-token", JSON.stringify(invalidToken));
@@ -81,11 +95,12 @@ describe("ProtectedRoute", () => {
             const router = createMemoryRouter(routes, { initialEntries: ["/"] });
             await act(async () => {
                 render(<RouterProvider router={router} />)
-            }) 
-            screen.debug();
+            })
+            
+            //
             expect(fetch).toHaveBeenCalled();
             expect(screen.queryByRole("form", { name: "login-form" })).toBeInTheDocument();
-            localStorage.clear();
+
         })
     })
 
