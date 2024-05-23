@@ -5,6 +5,8 @@ import { IUser } from "../interfaces";
 const ProtectedRoute = () => {
     const [loading, setLoading] =useState<boolean>(true);
     const [user, setUser] = useState<IUser | null>(null);
+    const [error, setError] = useState<string | null>(null)
+    
     useEffect(() => {
         const fetchUser = async (token: string) => {
             const response = await fetch("http://localhost:3000/users/validateToken", {
@@ -27,7 +29,7 @@ const ProtectedRoute = () => {
                         setUser(data.user)
                     }
                 }).catch((error) => {
-                    console.error(error)
+                    setError(error)
                 }).finally(()=> setLoading(false));
         } else {
             setLoading(false);
@@ -39,7 +41,7 @@ const ProtectedRoute = () => {
     } else if (user && !loading) {
         return <Outlet />;
     }
-    return <div className="text-center relative top-1/2">Loading page...</div>
+    return (< div className = "text-center relative top-1/2" > {!error ? "Loading page...": error }</div >)
 }
 
 export default ProtectedRoute
