@@ -1,6 +1,7 @@
 import App from "./App";
 import ProtectedRoute from "./components/ProtectedRoute"
 import Login from "./components/LoginForm";
+import CreateUser from "./components/CreateUser";
 
 const routes = [
     {
@@ -22,6 +23,10 @@ const routes = [
     {
         path: "/login",
         element: <Login/>
+    },
+    {
+        path: "/newuser",
+        element: <CreateUser/>
     },
     {
         path: "*",
