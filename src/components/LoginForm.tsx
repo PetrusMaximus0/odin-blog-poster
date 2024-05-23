@@ -9,7 +9,7 @@ export default function LoginForm() {
     }
     const [formSubmitting, setFormSubmitting] = useState<boolean>(false);
     const [formError, setFormError] = useState<string | null>(null);
-    const [formData, setFormData] = useState<LoginFormState>({} as LoginFormState);
+    const [formData, setFormData] = useState<LoginFormState>({username: "", password: ""});
 
     const navigate = useNavigate();
 
