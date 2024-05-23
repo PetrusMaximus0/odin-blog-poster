@@ -26,8 +26,8 @@ export default function CustomInput({handleInputChange, value, name, required, i
                 </button>
             }
             {
-                required && <input aria-label={name} required onChange={(e)=>handleInputChange(e)} value={value} className="pr-7 pl-2 bg-slate-700 white " type={hideInput ? inputType : "text"} name={name} id={name} />
-            || <input aria-label={name} onChange={(e)=>handleInputChange(e)} value={value} className="pr-7 pl-2 bg-slate-700 white " type={hideInput ? inputType : "text"} name={name} id={name} />
+                required && <input aria-label={`${name}-input`} required onChange={(e)=>handleInputChange(e)} value={value} className="pr-7 pl-2 bg-slate-700 white " type={hideInput ? inputType : "text"} name={name} id={name} />
+            || <input aria-label={`${name}-input`} onChange={(e)=>handleInputChange(e)} value={value} className="pr-7 pl-2 bg-slate-700 white " type={hideInput ? inputType : "text"} name={name} id={name} />
             }
         </div>
 
