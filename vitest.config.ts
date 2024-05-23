@@ -13,6 +13,9 @@ export default defineConfig({
       forks: {
         singleFork: true,
       }
-    }
+    },
+    coverage: {
+      provider: "v8",
+    },
   },
 });
