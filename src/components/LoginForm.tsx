@@ -1,12 +1,9 @@
 import { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom"
 import CustomInput from "./CustomInput";
+import { LoginFormState } from "../interfaces";
 
 export default function LoginForm() {
-    interface LoginFormState {
-        username: string,
-        password: string,
-    }
     const [formSubmitting, setFormSubmitting] = useState<boolean>(false);
     const [formError, setFormError] = useState<string | null>(null);
     const [formData, setFormData] = useState<LoginFormState>({username: "", password: ""});

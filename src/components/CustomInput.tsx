@@ -1,14 +1,7 @@
 import Icon from "@mdi/react"
 import { mdiEye, mdiEyeOff } from "@mdi/js"
-import { useState, FormEvent } from "react"
-
-interface IInputProps{
-    handleInputChange: (e: FormEvent<HTMLInputElement>) => void,
-    value: string,
-    name: string,
-    required: boolean,
-    inputType: string,
-}
+import { useState } from "react"
+import {IInputProps} from "../interfaces"
 
 export default function CustomInput({handleInputChange, value, name, required, inputType}:IInputProps) {
     const [hideInput, setHideInput] = useState<boolean>(true);
@@ -26,8 +19,8 @@ export default function CustomInput({handleInputChange, value, name, required, i
                 </button>
             }
             {
-                required && <input aria-label={`${name}-input`} required onChange={(e)=>handleInputChange(e)} value={value} className="pr-7 pl-2 bg-slate-700 white " type={hideInput ? inputType : "text"} name={name} id={name} />
-            || <input aria-label={`${name}-input`} onChange={(e)=>handleInputChange(e)} value={value} className="pr-7 pl-2 bg-slate-700 white " type={hideInput ? inputType : "text"} name={name} id={name} />
+                required && <input aria-label={`${name}-input`} required onChange={handleInputChange} value={value} className="pr-7 pl-2 bg-slate-700 white " type={hideInput ? inputType : "text"} name={name} id={name} />
+            || <input aria-label={`${name}-input`} onChange={handleInputChange} value={value} className="pr-7 pl-2 bg-slate-700 white " type={hideInput ? inputType : "text"} name={name} id={name} />
             }
         </div>
 
