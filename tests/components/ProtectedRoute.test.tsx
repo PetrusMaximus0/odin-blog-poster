@@ -1,14 +1,14 @@
 import { render, screen, act } from "@testing-library/react";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
-import routes from "../src/routes";
-import { IUser } from "../src/interfaces";
+import routes from "../../src/routes";
+import { IUser } from "../../src/interfaces";
 import { Mock } from "vitest";
 
 describe("ProtectedRoute", () => {
     it("renders a loading page while the fetch request in ongoing", async () => {
         global.fetch = vi.fn(() => new Promise(() => {})) as Mock;
         const router = createMemoryRouter(routes, { initialEntries: ["/"] });
-        localStorage.setItem("login-token", JSON.stringify("anytoken"));
+        localStorage.setItem("login-token", "anytoken");
         await act(async () => { 
             render(<RouterProvider router={router} />);
         });
