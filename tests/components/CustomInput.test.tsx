@@ -7,15 +7,15 @@ describe("CustomInput", () => {
     describe("input is type password", () => {        
         it("changes the input type when reveal password button is clicked", async () => {
             render(<CustomInput
-                required={true}
-                name="input"
                 handleInputChange={() => { }}
                 value="0"
+                name="input"
+                required={true}
                 inputType="password"
             />);
             
             // Verify the input type is password
-            let input = screen.getByLabelText("input") as HTMLInputElement;
+            const input = screen.getByLabelText(/input/i) as HTMLInputElement;
             expect(input.type).toEqual("password");
             
             // Set up the user click
@@ -24,7 +24,6 @@ describe("CustomInput", () => {
             await user.click(button);
                         
             // Verify the input type has changed to text
-            input = screen.getByLabelText("input") as HTMLInputElement;
             expect(input.type).toEqual("text");
 
         })
@@ -61,7 +60,7 @@ describe("CustomInput", () => {
             )
 
             //
-            const inputField = screen.getByLabelText("input") as HTMLInputElement;            
+            const inputField = screen.getByLabelText(/input/i) as HTMLInputElement;            
             await userEvent.type(inputField, "inp");           
 
             //
