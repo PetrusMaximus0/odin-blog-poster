@@ -21,3 +21,26 @@ body {
     width: 100%;
     height: 100vh;
 }
+
+.hide{
+    display:none
+}
+
+.showMenu:hover + .hide, .showMenu:active + .hide{
+    display: flex;
+} 
+
+.dropDownMenu{
+    animation-name: slideIn;
+    animation-duration: 0.3s;
+}
+
+@keyframes slideIn {
+    from{ 
+        opacity: 0;
+        transform: translateY(-30px)
+    }to{
+        opacity:1;
+        transform: translateY(0);
+    }
+}
