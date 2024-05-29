@@ -4,8 +4,9 @@ import CreateUser from "./components/CreateUser";
 import Catalog from "./components/Catalog";
 import Content from "./components/Content";
 import { Navigate, redirect } from "react-router-dom";
-import CreatePost from "./components/CreatePost";
+import BlogPostForm from "./components/BlogPostForm";
 import QueryCatalog from "./components/QueryCatalog";
+import { CategoryForm } from "./components/CategoryForm";
 
 const rootLoader = async () => {
     try {
@@ -29,7 +30,6 @@ const rootLoader = async () => {
         if (result.status >= 400) {
             if (result.status === 401 || result.status === 404) {
                 redirect("/login");
-                return;
             } else {
                 throw new Error(`Server error with status, ${result.status}`);
             }
@@ -43,6 +43,7 @@ const rootLoader = async () => {
         
     } catch (error) {
         console.error(error);
+        redirect("/login");
     }
 
 
@@ -93,9 +94,9 @@ const contentLoader = async ({params} :{ params: IContentLoader}) => {
             if (res.status >= 400) {
                 if (res.status === 401 || res.status === 404) {
                     redirect("/login");
-                    return;
                 } else {
                     console.log("Throwing error!");
+                    redirect("/login");
                     throw new Error(`Server error with status, ${res.status}`);
                 }
 			}
@@ -116,6 +117,63 @@ const contentLoader = async ({params} :{ params: IContentLoader}) => {
 		lastPage: posts.lastPage,
         queryName: params.name ? params.name : '', 
 	};
+}
+
+const editPostLoader = async ({ params }: { params: { id: string } }) => {
+    try {
+        const token = localStorage.getItem("login-token");
+        if (!token) {
+            redirect("/");
+        }
+
+        const result = await fetch(`http://localhost:3000/posts/${params.id}/edit`, {
+            mode: "cors",
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            }
+        })
+
+        //
+        if (result.status >= 400) {
+            if (result.status === 401) {
+                throw new Error(`${result.status}`);
+            }
+            throw new Error("Access error "+`${result.status}`);
+        }
+        //
+        const response = await result.json();
+        return { post: response.blogpost, categories: response.categories }
+        
+    //
+    } catch (error) {
+        console.error(error);
+        redirect("/");
+    }
+}
+
+const manageCategoriesLoader = async () => {    
+    try {
+        const url = "http://localhost:3000/categories";
+        const result = await fetch(url, {
+            mode: "cors",
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            }
+
+        })
+        if (result.status >= 400) {
+            throw new Error(`${result.status}`);
+        }
+
+        const response = await result.json();
+        return({categories: response.categories})
+
+    } catch (error) {
+        redirect("/");
+    }
 }
 
 const routes = [
@@ -144,9 +202,14 @@ const routes = [
                         element: <p>Loading blogpost</p>
                     },
                     {
+                        loader: editPostLoader,
+                        path: "/posts/:id/edit",
+                        element: <BlogPostForm/>
+                    },
+                    {
                         loader: rootLoader,
                         path: "/posts/new",
-                        element: <CreatePost/>
+                        element: <BlogPostForm/>
                     },
                     {
                         loader: contentLoader,
@@ -159,13 +222,16 @@ const routes = [
                         element: <QueryCatalog />,
                     },
                     {
+                        loader: manageCategoriesLoader,
+                        path: "/posts/manageCategories",
+                        element: <CategoryForm />
+                    },
+                    {
                         path: "/posts/*",
                         element: <Navigate to="/posts/page/1" />,
-                    }
+                    },
                 ]
-                
             },
-
         ]        
     },
     {
