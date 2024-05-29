@@ -1,13 +1,13 @@
 import CustomInput from "./CustomInput"
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { IInputChange, IPost } from "../interfaces";
 import { useLoaderData, useNavigate } from "react-router-dom";
 
-export default function CreatePost() {
+export default function BlogPostForm() {
+
+    const { categories, post } = useLoaderData() as {categories: [{_id: string, name: string}], post: IPost};
 
     const navigate = useNavigate();
-
-    const { categories } = useLoaderData() as {categories: [{_id: string, name: string}]};
 
     const [formData, setFormData] = useState<IPost>({
         _id: "",
@@ -20,6 +20,7 @@ export default function CreatePost() {
         headerImage: "",
         categories: [],
     });
+
     const [loading, setLoading] = useState<boolean>(false);
 
     interface IValidationError{
@@ -68,10 +69,15 @@ export default function CreatePost() {
                 return;
             }
 
+
             // Fetch
-            const url = "http://localhost:3000/posts/new";
-            const result = await fetch(url, {
-                method: "POST",
+            const baseUrl = "http://localhost:3000/posts/";
+            const detail = post ? `${post._id}/edit` : "new";
+
+            const method = post ? "PUT" : "POST";
+            
+            const result = await fetch(baseUrl + detail, {
+                method: method,
                 mode: "cors",
                 headers: {
                     "content-type": "application/json",
@@ -86,7 +92,7 @@ export default function CreatePost() {
                     const response = await result.json();
                     // Invalid request error, render the form with previous values and errors sent from the server.
                     setValidationErrors(response.errors as IValidationError[]);
-                    setFormData(response.postData);
+                    setFormData(response.postdata);
                     setLoading(false);
                     return;
                 }
@@ -103,6 +109,13 @@ export default function CreatePost() {
             console.error(error);
         }
     }
+    
+    useEffect(() => {
+        if (post) {
+            setFormData({...post, headerImage: post.headerImage.replace(/&#x2F;/g, "/")});
+            // check all the categories that are present in post.
+        } 
+    },[post])
     
     return (
         <form className="flex flex-col gap-4 " onSubmit={handleFormSubmit} action="">
@@ -133,12 +146,10 @@ export default function CreatePost() {
                 <legend className="px-2 ml-4 text-lg"> Categories </legend>
                 {categories.map((cat) => 
                     <label key={cat._id} className="" htmlFor={"category-"+cat.name}> {cat.name}
-                        <input onChange={handleInputChange} className="ml-1" type="checkbox" name={"category-"+cat.name} id={cat._id} value={cat._id} />
+                        <input checked={formData.categories?.includes(cat._id)} onChange={handleInputChange} className="ml-1" type="checkbox" name={"category-"+cat.name} id={cat._id} value={cat._id} />
                     </label>                
 
                 )}
-                
-
             </fieldset>
 
             <fieldset className="border p-4 flex flex-col gap-2">
