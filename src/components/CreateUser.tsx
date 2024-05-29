@@ -2,9 +2,11 @@ import {FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
 import CustomInput from "./CustomInput";
 import { useNavigate } from "react-router-dom";
+import { IInputChange } from "../interfaces";
 
 export default function CreateUser() {
     const navigate = useNavigate();
+
     interface IFormState {
         username: string,
         password: string,
@@ -19,7 +21,7 @@ export default function CreateUser() {
         confirmPassword: "",
     })
 
-    function handleInputChange(e: FormEvent<HTMLInputElement>) {
+    function handleInputChange(e: IInputChange) {
         const { name, value } = e.currentTarget;
         setFormData({ ...formData, [name]: value });
     }
