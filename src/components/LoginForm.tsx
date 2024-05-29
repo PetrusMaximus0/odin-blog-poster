@@ -1,7 +1,7 @@
 import { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom"
 import CustomInput from "./CustomInput";
-import { LoginFormState } from "../interfaces";
+import { IInputChange, LoginFormState } from "../interfaces";
 
 export default function LoginForm() {
     const [formSubmitting, setFormSubmitting] = useState<boolean>(false);
@@ -10,13 +10,14 @@ export default function LoginForm() {
 
     const navigate = useNavigate();
 
-    function handleInputChange(e: FormEvent<HTMLInputElement>) {
+    function handleInputChange(e: IInputChange) {
         const { name, value } = e.currentTarget;
         setFormData({ ...formData, [name]: value });
     }
 
     const storeToken = (token: string) => {
         localStorage.setItem("login-token", token);
+        localStorage.setItem("login-username", formData.username)
     }
 
     const handleFormSubmit = async (e: FormEvent) => {
