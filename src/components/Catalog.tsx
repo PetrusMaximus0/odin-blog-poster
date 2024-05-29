@@ -1,4 +1,4 @@
-import { Link, useLoaderData, useNavigation } from 'react-router-dom';
+import { Link, useLoaderData, useNavigate, useNavigation } from 'react-router-dom';
 import BlogCard from './BlogCard';
 import Icon from '@mdi/react';
 import { mdiArrowLeft, mdiArrowRight } from '@mdi/js';
@@ -7,14 +7,44 @@ import { IPost } from '../interfaces';
 
 export default function Catalog({fromQuery=false}) {
     const { state } = useNavigation();
-    const { posts, page, lastPage } = useLoaderData() as {posts: IPost[], page: string, lastPage: boolean};
+    const { posts, page, lastPage } = useLoaderData() as { posts: IPost[], page: string, lastPage: boolean };
+    const navigate = useNavigate();
+
+    const deletePost = async (id: string) => {
+        const token = localStorage.getItem("login-token");
+        if (!token) {
+            navigate("/");
+            return;
+        }
+        try {
+            const result = await fetch(`http://localhost:3000/posts/${id}`, {
+                mode: "cors",
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token}`, 
+                },            
+            })
+            if (result.status >= 400) {
+                throw new Error(`Request failed with code ${result.status}`);    
+            }
+            // force page refresh to current page
+            const destination = fromQuery
+                ? new URL('.', window.origin + location.pathname)
+                    .href + `${parseInt(page)}`
+                : `/posts/page/${parseInt(page)}`;
+            navigate(destination)
+            
+        } catch (error) {
+            console.error(error);
+        }
+    } 
 
     const handlePostAction = (id: string, action: string) => {
         if (action === "edit") {
             console.log("Tried to edit post with id: ", id);
 
         } else if (action === "delete") {
-            console.log("Tried to delete post with id: ", id);
+            deletePost(id);
             
         } else if (action === "publish") {
             console.log("Tried to publish post with id: ", id);
@@ -28,8 +58,6 @@ export default function Catalog({fromQuery=false}) {
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [posts]);
-    
-    console.log(posts);
 
     return (
         (posts.length > 0 && state !== "loading" && (
