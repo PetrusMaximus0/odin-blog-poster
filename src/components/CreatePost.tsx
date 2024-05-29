@@ -1,9 +1,11 @@
 import CustomInput from "./CustomInput"
 import { FormEvent, useState } from "react";
 import { IInputChange, IPost } from "../interfaces";
-import { redirect, useLoaderData } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 
 export default function CreatePost() {
+
+    const navigate = useNavigate();
 
     const { categories } = useLoaderData() as {categories: [{_id: string, name: string}]};
 
@@ -25,11 +27,12 @@ export default function CreatePost() {
         msg: string,
         path: string,
     }
-    const [error, setError] = useState< string >("");
+    const [error, setError] = useState<string>("");
+    
     const [validationErrors, setValidationErrors] = useState<IValidationError[]>([]);
+
     const handleInputChange = (e: IInputChange) => {
         const { name, value} = e.currentTarget
-        console.log(name, value, e.currentTarget);
         if (name === "hidden") {
             //
             setFormData({ ...formData, hidden: value === "true" ? "false" : "true" })    
@@ -40,7 +43,6 @@ export default function CreatePost() {
             if ((e.currentTarget as HTMLInputElement).checked) {
                 newCategories.push(value);
             }
-            console.log(newCategories);
             setFormData({...formData, categories: newCategories})
         
         } else {
@@ -57,13 +59,12 @@ export default function CreatePost() {
 
         // Prepare the form data
         const payload = { ...formData };
-        console.log(payload);
 
         try {
             // Obtain the token
             const token = localStorage.getItem("login-token");
             if (!token) {
-                redirect("/");
+                navigate("/");
                 return;
             }
 
@@ -82,9 +83,8 @@ export default function CreatePost() {
             // Handle ok status with errors
             if (result.status >= 400) {
                 if (result.status === 400) {
-                    // Invalid request error, render the form with previous values and errors sent from the server.
                     const response = await result.json();
-                    console.log(response);
+                    // Invalid request error, render the form with previous values and errors sent from the server.
                     setValidationErrors(response.errors as IValidationError[]);
                     setFormData(response.postData);
                     setLoading(false);
@@ -93,17 +93,15 @@ export default function CreatePost() {
                 throw new Error(`Error with status code: ${result.status}`);
             }
 
-            // Assert no >= 400 errors
-            // Redirect to the Post Page.
-            console.log("No error")
+            const response = await result.json();
+            setLoading(false);
+            navigate(`/posts/${response.post._id}`);
+
         } catch (error) {           
             // Should render the error below.
             setError((error as Error).message);
             console.error(error);
-            console.log("Error");
         }
-
-        setLoading(false);
     }
     
     return (
@@ -134,7 +132,7 @@ export default function CreatePost() {
             <fieldset className="border flex flex-wrap p-4 gap-5">
                 <legend className="px-2 ml-4 text-lg"> Categories </legend>
                 {categories.map((cat) => 
-                    <label className="" htmlFor={"category-"+cat.name}> {cat.name}
+                    <label key={cat._id} className="" htmlFor={"category-"+cat.name}> {cat.name}
                         <input onChange={handleInputChange} className="ml-1" type="checkbox" name={"category-"+cat.name} id={cat._id} value={cat._id} />
                     </label>                
 
