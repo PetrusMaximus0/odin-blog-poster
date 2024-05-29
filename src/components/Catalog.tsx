@@ -10,6 +10,7 @@ export default function Catalog({fromQuery=false}) {
     const { posts, page, lastPage } = useLoaderData() as { posts: IPost[], page: string, lastPage: boolean };
     const navigate = useNavigate();
 
+    // Delete a post by ID
     const deletePost = async (id: string) => {
         const token = localStorage.getItem("login-token");
         if (!token) {
@@ -39,9 +40,14 @@ export default function Catalog({fromQuery=false}) {
         }
     } 
 
+    // Edit a post by ID
+    const editPost = async (id: string) => {
+        navigate(`/posts/${id}/edit`);
+    }
+
     const handlePostAction = (id: string, action: string) => {
         if (action === "edit") {
-            console.log("Tried to edit post with id: ", id);
+            editPost(id);
 
         } else if (action === "delete") {
             deletePost(id);
