@@ -20,6 +20,10 @@ export default function BlogCard({ data, handlePostAction }: {data: IPost, handl
 		setAction("");
 	}
 
+	const handleCancelAction = () => {
+		setAction("");
+	}
+
 	return (
 		<div className="flex flex-col gap-4">
 			<figure className="max-w-full">
@@ -69,7 +73,8 @@ export default function BlogCard({ data, handlePostAction }: {data: IPost, handl
 					<p>
 						<span className='uppercase font-bold'>{action}</span> the blogpost ?
 					</p>
-					<button onClick={handleConfirmAction} className='text-blue-300 hover:text-blue-600 hover:bg-white hover:font-bold bg-slate-900 px-2 py-1 rounded'> Confirm </button>	
+					<button onClick={handleConfirmAction} className='text-red-300 hover:text-blue-600 hover:bg-white hover:font-bold bg-slate-900 px-2 py-1 rounded'> Confirm </button>	
+					<button onClick={handleCancelAction} className='text-blue-300 hover:text-blue-600 hover:bg-white hover:font-bold bg-slate-900 px-2 py-1 rounded'> Cancel </button>	
 				</div>
 
 			}
