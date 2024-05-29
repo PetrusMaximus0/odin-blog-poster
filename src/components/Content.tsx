@@ -47,7 +47,7 @@ export default function Content() {
                 </div>               
                 <div className="flex flex-col gap-4 w-full items-center justify-center lg:flex-row lg:justify-between flex-wrap">
                     <nav className="">
-                        <ul className="flex items-center justify-between gap-4 text-lg font-semibold">
+                        <ul className="flex flex-col sm:flex-row items-center justify-between gap-4 text-lg font-semibold">
                             <li>
                                 <Link to="/posts/new" className="bg-blue-200 text-slate-700 active:bg-slate-900 active:text-slate-200 hover:bg-slate-200 hover:text-slate-900 flex justify-between items-center gap-1 px-3 py-1 rounded">
                                     New Post
@@ -62,7 +62,6 @@ export default function Content() {
                                 <span className="showMenu cursor-pointer bg-blue-200 text-slate-700 active:bg-slate-900 active:text-slate-200 hover:bg-slate-200 hover:text-slate-900 flex justify-between items-center gap-1 px-3 py-1 rounded">
                                     Categories
                                 </span>
-                        
                                 <ul className="hide hover:flex flex flex-col gap-4 absolute w-fit rounded-md p-6 text-nowrap bg-blue-200 dropDownMenu">
                                     {
                                         categories.map((category) => {
@@ -75,11 +74,10 @@ export default function Content() {
                                             )
                                         })
                                     }
-                                    <li className=" bg-blue-200 text-slate-700 active:bg-slate-900 active:text-slate-200 hover:bg-slate-200 hover:text-slate-900">
-                                        <Link to= "/newCategory" className="w-full py-1 px-2 font-bold"> Add new Category </Link>
-                                    </li>
                                 </ul>
-                                
+                            </li>
+                            <li>
+                                <Link to= "/posts/manageCategories" className="bg-blue-200 text-slate-700 active:bg-slate-900 active:text-slate-200 hover:bg-slate-200 hover:text-slate-900 flex justify-between items-center gap-1 rounded w-full py-1 px-2"> Manage Categories </Link>
                             </li>
                         </ul>
                     </nav>
