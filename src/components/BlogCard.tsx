@@ -23,9 +23,6 @@ export default function BlogCard({ data, handlePostAction }: {data: IPost, handl
 	const handleCancelAction = () => {
 		setAction("");
 	}
-
-	console.log(data);
-
 	return (
 		<div className="flex flex-col gap-4">
 			<h2 className="text-center text-blue-300 hover:text-blue-600 mr-auto text-4xl font-light">

@@ -23,8 +23,7 @@ export default function LoginForm() {
 
     const handleFormSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        setFormSubmitting(true);     
-            
+        setFormSubmitting(true);
         try {
             const result = await fetch(`${apiBaseUrl}/users/login`, {
                 mode: "cors",
@@ -36,9 +35,8 @@ export default function LoginForm() {
             })
             
             const res = await result.json();
-            
             //
-            if (!result.ok) {               
+            if (!result.ok) {           
                 setFormSubmitting(false);
                 throw new Error(res.error);
             }
