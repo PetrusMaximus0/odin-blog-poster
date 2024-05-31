@@ -1,17 +1,16 @@
 import { FormEvent } from "react";
 
-export interface IPosts {
-    title: string,
-}
-
 export interface IComment {
     _id: string,
-    name: string,
+    date: Date,
+    author: string,
+    text: string,
 }
 
 export interface ICategory{
     _id: string,
     name: string,
+    posts: string[],
 }
 
 export interface IPost {
@@ -23,18 +22,23 @@ export interface IPost {
     timeToRead: string,
     hidden: string,
     headerImage: string,
-    date?: string,
+    date?: Date,
     comments?: IComment[],
-    categories?: string[],    
+    categories: string[],    
 }
 
 export interface IUser {
-    "posts": IPosts[],
+    "posts": IPost[],
     "_id": string,
     "username": string,
     "password": string,
     "isAdmin": boolean,
     "__v": number,
+}
+
+export interface IArchive {
+    date: number,
+    number: number 
 }
 
 export interface LoginFormState {
@@ -53,7 +57,7 @@ export interface IInputProps{
 }
 
 export interface ICatalogLoaderData{
-    posts: IPosts[],
+    posts: IPost[],
     pageNumber: number,
     lastPage: number,
 }
