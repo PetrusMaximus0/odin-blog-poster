@@ -24,20 +24,15 @@ export default function BlogCard({ data, handlePostAction }: {data: IPost, handl
 		setAction("");
 	}
 
+	console.log(data);
+
 	return (
 		<div className="flex flex-col gap-4">
-			<figure className="max-w-full">
-				<img
-					className="object-cover w-full 2xl:max-h-96 max-h-64"
-					src={data.headerImage.replace(/&#x2F;/g, "/")}
-					alt="Post Image"
-				/>
-			</figure>
-			<h2 className="text-center text-blue-300 hover:text-blue-600 mx-auto text-4xl font-light">
+			<h2 className="text-center text-blue-300 hover:text-blue-600 mr-auto text-4xl font-light">
 				<Link to={`/posts/${data._id}`}>{data.title}</Link>
 			</h2>
-			<p className="text-left">{data.description}</p>
-			<p className="flex gap-4 justify-start italic font-light">
+			<p className="sm:text-left text-center">{data.description}</p>
+			<p className="flex gap-4 justify-center sm:justify-start italic font-light">
 				<Link
 					className="text-blue-300 hover:text-blue-600"
 					to={`/date/${new Date(data.date!).getFullYear()}/page/1`}
@@ -54,7 +49,7 @@ export default function BlogCard({ data, handlePostAction }: {data: IPost, handl
 			</p>
 			{
 				!action && (
-					<p className='text-lgfont-semibold flex gap-4 mx-auto'>
+					<p className='text-lgfont-semibold flex gap-4 justify-center'>
 						<button onClick={()=>handleRequestAction("edit")} className='text-blue-300 hover:text-blue-600 hover:bg-white hover:font-bold bg-slate-900 px-2 py-1 rounded'>
 							Edit
 						</button>
@@ -78,6 +73,8 @@ export default function BlogCard({ data, handlePostAction }: {data: IPost, handl
 				</div>
 
 			}
+			
+			<hr />
 		</div>
 	);
 }
