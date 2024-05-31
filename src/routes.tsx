@@ -6,47 +6,49 @@ import Content from "./components/Content";
 import { Navigate, redirect } from "react-router-dom";
 import BlogPostForm from "./components/BlogPostForm";
 import QueryCatalog from "./components/QueryCatalog";
-import { CategoryForm } from "./components/CategoryForm";
+import CategoryForm from "./components/CategoryForm";
+import BlogPost from "./components/BlogPost";
+import { IPost, IArchive } from "./interfaces";
 
 const rootLoader = async () => {
     try {
-
-        const token = localStorage.getItem("login-token");
-        if (!token) {
-            redirect("/");
-            return;
-        }
         //
         const result = await fetch("http://localhost:3000/posts/admin/shortlist", {
             method: "GET",
             mode: "cors",
             headers: {
                 "content-type": "application/json",
-                Authorization: `Bearer ${token}`,
             }
         })
 
         //
         if (result.status >= 400) {
-            if (result.status === 401 || result.status === 404) {
-                redirect("/login");
-            } else {
-                throw new Error(`Server error with status, ${result.status}`);
-            }
+            throw new Error(`Server error with status, ${result.status}`);            
         }
 
-        const { posts, categories } = await result.json();
+        const { categories, posts } = await result.json();
         const username = localStorage.getItem("login-username");
 
-        return { username: username, posts: posts, categories: categories };
+        const archives: IArchive[] = [];
         
-        
+        posts.forEach((post: IPost) => {
+            //
+            const index = archives.findIndex((element) => element.date === new Date(post.date!).getFullYear());
+            
+            //
+            if (index === -1) {
+                archives.push({ date: new Date(post.date!).getFullYear(), number: 1 });
+            } else {
+                archives[index] = {...archives[index], number: archives[index].number + 1}
+            }
+            archives.sort((a:IArchive, b:IArchive) =>  b.date - a.date);
+        })
+
+        return { username: username, categories: categories, archives: archives };
+                
     } catch (error) {
         console.error(error);
-        redirect("/login");
     }
-
-
 }
 
 interface IContentLoader {
@@ -60,7 +62,7 @@ interface IContentLoader {
 const contentLoader = async ({params} :{ params: IContentLoader}) => {
     //
 	if (!params.itemNumber) {
-		params.itemNumber = 3;
+		params.itemNumber = 10;
 	}
 
 	//
@@ -153,7 +155,7 @@ const editPostLoader = async ({ params }: { params: { id: string } }) => {
     }
 }
 
-const manageCategoriesLoader = async () => {    
+const categoriesLoader = async () => {    
     try {
         const url = "http://localhost:3000/categories";
         const result = await fetch(url, {
@@ -176,6 +178,32 @@ const manageCategoriesLoader = async () => {
     }
 }
 
+const blogpostLoader = async ({ params }:{params: {id: string } }) => {
+    const token = localStorage.getItem("login-token");
+    if (!token) {
+        redirect("/");
+    }
+    
+    return fetch(`http://localhost:3000/posts/${params.id}/admin`, {
+		method: 'GET',
+		mode: 'cors',
+		headers: {
+            'content-type': 'application/json',
+            Authorization: `Bearer ${token}`,
+		},
+	})
+		.then((res) => {
+			if (res.status >= 400) {
+				throw new Error(`Server error with status: ${res.status}`);
+			}
+			return res.json();
+		})
+		.then((res) => res)
+		.catch((error) => {
+			console.error(error);
+		});
+};
+
 const routes = [
     {
         path: "/",
@@ -197,9 +225,10 @@ const routes = [
                         path: "/posts/page/:pageNumber",
                         element: <Catalog/>
                     },
-                    {                  
+                    {           
+                        loader: blogpostLoader,
                         path: "/posts/:id",
-                        element: <p>Loading blogpost</p>
+                        element: <BlogPost/>
                     },
                     {
                         loader: editPostLoader,
@@ -207,14 +236,9 @@ const routes = [
                         element: <BlogPostForm/>
                     },
                     {
-                        loader: rootLoader,
+                        loader: categoriesLoader,
                         path: "/posts/new",
                         element: <BlogPostForm/>
-                    },
-                    {
-                        loader: contentLoader,
-                        path: '/posts/:queryType/:query/:name/page/:pageNumber/',            
-                        element: <QueryCatalog />,
                     },
                     {
                         loader: contentLoader,
@@ -222,7 +246,12 @@ const routes = [
                         element: <QueryCatalog />,
                     },
                     {
-                        loader: manageCategoriesLoader,
+                        loader: contentLoader,
+                        path: '/posts/:queryType/:query/:name/page/:pageNumber/',            
+                        element: <QueryCatalog />,
+                    },
+                    {
+                        loader: categoriesLoader,
                         path: "/posts/manageCategories",
                         element: <CategoryForm />
                     },
