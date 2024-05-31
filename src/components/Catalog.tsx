@@ -14,8 +14,7 @@ export default function Catalog({fromQuery=false}) {
     const deletePost = async (id: string) => {
         const token = localStorage.getItem("login-token");
         if (!token) {
-            navigate("/");
-            return;
+            navigate("/login");
         }
         try {
             const result = await fetch(`http://localhost:3000/posts/${id}`, {
@@ -45,6 +44,42 @@ export default function Catalog({fromQuery=false}) {
         navigate(`/posts/${id}/edit`);
     }
 
+    // Toggle post visibility
+    const publishPost = async (id: string, action: "publish" | "hide") => {
+        try {
+            const url = `http://localhost:3000/posts/${id}/${action}`;
+
+            const token = localStorage.getItem("login-token");
+
+            const result = await fetch(url, {
+                mode: "cors",
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                }
+            })
+
+            if (result.status >= 400) {
+                if (result.status === 401) {
+                    navigate("/login");
+                }
+                throw new Error(`${result.status}`);
+            }
+
+            // force page refresh to current page
+            const destination = fromQuery
+                ? new URL('.', window.origin + location.pathname)
+                    .href + `${parseInt(page)}`
+                : `/posts/page/${parseInt(page)}`;
+            
+            navigate(destination)
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const handlePostAction = (id: string, action: string) => {
         if (action === "edit") {
             editPost(id);
@@ -53,10 +88,10 @@ export default function Catalog({fromQuery=false}) {
             deletePost(id);
             
         } else if (action === "publish") {
-            console.log("Tried to publish post with id: ", id);
+            publishPost(id, "publish");
             
         } else if (action === "hide") {
-            console.log("Tried to hide post with id: ", id);
+            publishPost(id, "hide");
 
         }
     }
@@ -112,7 +147,7 @@ export default function Catalog({fromQuery=false}) {
 
                 </div>
             </section>
-        )) || <p className="text-center text-xl"> No results found.</p>
+        )) || <p className="text-center text-xl"> Loading...</p>
             
     )
 
