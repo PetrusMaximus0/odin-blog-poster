@@ -65,8 +65,7 @@ export default function BlogPostForm() {
             // Obtain the token
             const token = localStorage.getItem("login-token");
             if (!token) {
-                navigate("/");
-                return;
+                navigate("/login");
             }
 
 
@@ -92,16 +91,17 @@ export default function BlogPostForm() {
                     const response = await result.json();
                     // Invalid request error, render the form with previous values and errors sent from the server.
                     setValidationErrors(response.errors as IValidationError[]);
-                    setFormData(response.postdata);
+                    setFormData(response.postData);
                     setLoading(false);
                     return;
+                } else if (result.status === 401) {
+                    navigate("/login");                    
                 }
                 throw new Error(`Error with status code: ${result.status}`);
             }
 
-            const response = await result.json();
             setLoading(false);
-            navigate(`/posts/${response.post._id}`);
+            navigate(`/`, {replace: true});
 
         } catch (error) {           
             // Should render the error below.
@@ -112,7 +112,7 @@ export default function BlogPostForm() {
     
     useEffect(() => {
         if (post) {
-            setFormData({...post, headerImage: post.headerImage.replace(/&#x2F;/g, "/")});
+            setFormData({...post, headerImage: post.headerImage});
             // check all the categories that are present in post.
         } 
     },[post])
