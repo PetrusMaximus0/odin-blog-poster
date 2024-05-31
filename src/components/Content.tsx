@@ -5,15 +5,13 @@ import Icon from "@mdi/react";
 import { mdiMagnify } from "@mdi/js";
 import CustomInput from "./CustomInput";
 import { useNavigate } from "react-router-dom";
-import { IInputChange } from "../interfaces";
+import { ICategory, IInputChange, IArchive } from "../interfaces";
 
 export default function Content() {
     
-
     // Take the user name passed from react router.
-    const { username } = useLoaderData() as { username: string };
-    const { categories } = useLoaderData() as {categories: [{_id: string, name: string}]};
-    
+    const { categories, username, archives } = useLoaderData() as {categories: ICategory[], username: string, archives: IArchive[]};
+
     // Log out the user and refresh the page.
     const handleLogout = () => {
         localStorage.removeItem("login-token");
@@ -62,13 +60,13 @@ export default function Content() {
                                 <span className="showMenu cursor-pointer bg-blue-200 text-slate-700 active:bg-slate-900 active:text-slate-200 hover:bg-slate-200 hover:text-slate-900 flex justify-between items-center gap-1 px-3 py-1 rounded">
                                     Categories
                                 </span>
-                                <ul className="hide hover:flex flex flex-col gap-4 absolute w-fit rounded-md p-6 text-nowrap bg-blue-200 dropDownMenu">
+                                <ul className="z-50 hide hover:flex flex flex-col gap-4 absolute w-fit rounded-md p-6 text-nowrap bg-blue-200 dropDownMenu">
                                     {
                                         categories.map((category) => {
                                             return (
                                                 <li key={category._id} className=" bg-blue-200 text-slate-700 active:bg-slate-900 active:text-slate-200 hover:bg-slate-200 hover:text-slate-900">
                                                     <Link to={`/posts/categories/${category._id}/${category.name}/page/1`} className="w-full py-1 px-2">
-                                                        {category.name}
+                                                        {category.name} ({category.posts.length})
                                                     </Link>
                                                 </li>
                                             )
@@ -76,8 +74,29 @@ export default function Content() {
                                     }
                                 </ul>
                             </li>
+                            
                             <li>
                                 <Link to= "/posts/manageCategories" className="bg-blue-200 text-slate-700 active:bg-slate-900 active:text-slate-200 hover:bg-slate-200 hover:text-slate-900 flex justify-between items-center gap-1 rounded w-full py-1 px-2"> Manage Categories </Link>
+                            </li>
+
+                            <li className="relative">
+                                <span className="showMenu cursor-pointer bg-blue-200 text-slate-700 active:bg-slate-900 active:text-slate-200 hover:bg-slate-200 hover:text-slate-900 flex justify-between items-center gap-1 px-3 py-1 rounded">
+                                    Archive
+                                </span>
+                                <ul className="z-50 hide hover:flex flex flex-col gap-4 absolute w-fit rounded-md p-6 text-nowrap bg-blue-200">
+                                    {archives.map((element) => (
+                                        <li
+                                            key={element.date}
+                                            className="bg-blue-200 text-slate-700 active:bg-slate-900 active:text-slate-200 hover:bg-slate-200 hover:text-slate-900"
+                                        >
+                                            <Link
+                                                to={`date/${element.date}/page/1/`}
+                                            >
+                                                {`${element.date} (${element.number})`}
+                                            </Link>
+                                        </li>
+                                    ))}
+                                </ul>
                             </li>
                         </ul>
                     </nav>
