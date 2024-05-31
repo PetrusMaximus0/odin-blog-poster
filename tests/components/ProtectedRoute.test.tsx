@@ -1,5 +1,5 @@
 import { render, screen, act } from "@testing-library/react";
-import { createMemoryRouter, RouterProvider } from "react-router-dom";
+import { createMemoryRouter, RouteObject, RouterProvider } from "react-router-dom";
 import routes from "../../src/routes";
 import { IUser } from "../../src/interfaces";
 import { Mock } from "vitest";
@@ -13,7 +13,7 @@ describe("ProtectedRoute", () => {
         localStorage.setItem("login-token", "anytoken");
         
         //
-        const router = createMemoryRouter(routes, { initialEntries: ["/"] });
+        const router = createMemoryRouter(routes as  RouteObject[] , { initialEntries: ["/"] });
         await act(async () => { 
             render(<RouterProvider router={router} />);
         });
@@ -31,7 +31,7 @@ describe("ProtectedRoute", () => {
             global.fetch = vi.fn();
            
             //
-            const router = createMemoryRouter(routes, { initialEntries: ["/"] });        
+            const router = createMemoryRouter(routes as  RouteObject[], { initialEntries: ["/"] });        
             await act(async () => {  
                 render(<RouterProvider router={router} />)
             })
@@ -63,7 +63,7 @@ describe("ProtectedRoute", () => {
             }) as Mock;
 
             //
-            const router = createMemoryRouter(routes, { initialEntries: ["/"] });
+            const router = createMemoryRouter(routes as  RouteObject[], { initialEntries: ["/"] });
             const validToken = "validtoken"
             localStorage.setItem("login-token", JSON.stringify(validToken));
 
@@ -92,7 +92,7 @@ describe("ProtectedRoute", () => {
             localStorage.setItem("login-token", JSON.stringify(invalidToken));
             
             //
-            const router = createMemoryRouter(routes, { initialEntries: ["/"] });
+            const router = createMemoryRouter(routes as  RouteObject[], { initialEntries: ["/"] });
             await act(async () => {
                 render(<RouterProvider router={router} />)
             })
