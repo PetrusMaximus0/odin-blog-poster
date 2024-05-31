@@ -8,12 +8,13 @@ import BlogPostForm from "./components/BlogPostForm";
 import QueryCatalog from "./components/QueryCatalog";
 import CategoryForm from "./components/CategoryForm";
 import BlogPost from "./components/BlogPost";
-import { IPost, IArchive } from "./interfaces";
+import { IPost, IArchive} from "./interfaces";
+import { apiBaseUrl } from "./config";
 
 const rootLoader = async () => {
     try {
         //
-        const result = await fetch("http://localhost:3000/posts/admin/shortlist", {
+        const result = await fetch(`${apiBaseUrl}/posts/admin/shortlist`, {
             method: "GET",
             mode: "cors",
             headers: {
@@ -70,7 +71,7 @@ const contentLoader = async ({params} :{ params: IContentLoader}) => {
 		params.pageNumber = 1;
 	}
 
-	const baseUrl = `http://localhost:3000/posts/admin/all?page=${params.pageNumber}&items=${params.itemNumber}`;
+	const baseUrl = `${apiBaseUrl}/posts/admin/all?page=${params.pageNumber}&items=${params.itemNumber}`;
 	let url = baseUrl;
 
 	//
@@ -128,7 +129,7 @@ const editPostLoader = async ({ params }: { params: { id: string } }) => {
             redirect("/");
         }
 
-        const result = await fetch(`http://localhost:3000/posts/${params.id}/edit`, {
+        const result = await fetch(`${apiBaseUrl}/posts/${params.id}/edit`, {
             mode: "cors",
             method: "GET",
             headers: {
@@ -157,7 +158,7 @@ const editPostLoader = async ({ params }: { params: { id: string } }) => {
 
 const categoriesLoader = async () => {    
     try {
-        const url = "http://localhost:3000/categories";
+        const url = `${apiBaseUrl}/categories`;
         const result = await fetch(url, {
             mode: "cors",
             method: "GET",
@@ -184,7 +185,7 @@ const blogpostLoader = async ({ params }:{params: {id: string } }) => {
         redirect("/");
     }
     
-    return fetch(`http://localhost:3000/posts/${params.id}/admin`, {
+    return fetch(`${apiBaseUrl}/posts/${params.id}/admin`, {
 		method: 'GET',
 		mode: 'cors',
 		headers: {

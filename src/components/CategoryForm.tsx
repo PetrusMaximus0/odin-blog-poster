@@ -3,6 +3,7 @@ import { ICategory, IInputChange } from "../interfaces";
 import CustomInput from "./CustomInput";
 import { FormEvent, useState } from "react";
 import CategoryCard from "./CategoryCard";
+import { apiBaseUrl } from "../config";
 
 export default function CategoryForm() {
     const { categories } = useLoaderData() as { categories: ICategory[] };
@@ -26,7 +27,7 @@ export default function CategoryForm() {
         
         //
         try {
-            const url = `http://localhost:3000/categories/`;
+            const url = `${apiBaseUrl}/categories/`;
             const token = localStorage.getItem("login-token");
             const result = await fetch(url, {
                 mode: "cors",

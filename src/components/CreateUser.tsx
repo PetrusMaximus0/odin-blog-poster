@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import CustomInput from "./CustomInput";
 import { useNavigate } from "react-router-dom";
 import { IInputChange } from "../interfaces";
+import { apiBaseUrl } from "../config";
 
 export default function CreateUser() {
     const navigate = useNavigate();
@@ -30,7 +31,7 @@ export default function CreateUser() {
     // Fetch the create user
         try {
             setFormSubmitting(true);
-            const result = await fetch("http://localhost:3000/users/new", {
+            const result = await fetch(`${apiBaseUrl}/users/new`, {
                 mode: "cors",
                 method: "POST",
                 headers: {

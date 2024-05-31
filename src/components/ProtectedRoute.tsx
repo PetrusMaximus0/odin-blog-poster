@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { IUser } from "../interfaces";
+import { apiBaseUrl } from "../config";
 
 const ProtectedRoute = () => {
     const [loading, setLoading] =useState<boolean>(true);
@@ -9,7 +10,7 @@ const ProtectedRoute = () => {
     
     useEffect(() => {
         const fetchUser = async (token: string) => {
-            const response = await fetch("http://localhost:3000/users/validateToken", {
+            const response = await fetch(`${apiBaseUrl}/users/validateToken`, {
                         mode: "cors",
                         method: "GET",
                         headers: {

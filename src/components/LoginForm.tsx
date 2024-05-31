@@ -2,6 +2,7 @@ import { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom"
 import CustomInput from "./CustomInput";
 import { IInputChange, LoginFormState } from "../interfaces";
+import { apiBaseUrl } from "../config";
 
 export default function LoginForm() {
     const [formSubmitting, setFormSubmitting] = useState<boolean>(false);
@@ -25,7 +26,7 @@ export default function LoginForm() {
         setFormSubmitting(true);     
             
         try {
-            const result = await fetch("http://localhost:3000/users/login", {
+            const result = await fetch(`${apiBaseUrl}/users/login`, {
                 mode: "cors",
                 method: "POST",
                 headers: {

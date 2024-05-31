@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { IInputChange } from '../interfaces';
 import { IPost, IComment } from '../interfaces';
 import Comment from "../components/Comment";
-
+import { apiBaseUrl } from '../config';
 interface IPostComplete extends IPost{
     comments: IComment[],
 }
@@ -36,7 +36,7 @@ export default function BlogPost() {
 		e.preventDefault();
 		setPostingComment(true);
 		const payload = { author: commentData.author, text: commentData.text };
-		fetch(`http://localhost:3000/posts/${post._id}/comment`, {
+		fetch(`${apiBaseUrl}/posts/${post._id}/comment`, {
 			mode: 'cors',
 			method: 'POST',
 			headers: {
@@ -83,7 +83,7 @@ export default function BlogPost() {
 		}
 		
 		//
-		const url = `http://localhost:3000/posts/${post._id}/comment/${commentId}`;
+		const url = `${apiBaseUrl}/posts/${post._id}/comment/${commentId}`;
 		
 		//
 		try {

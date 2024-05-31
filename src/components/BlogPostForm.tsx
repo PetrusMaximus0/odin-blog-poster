@@ -2,6 +2,7 @@ import CustomInput from "./CustomInput"
 import { FormEvent, useEffect, useState } from "react";
 import { IInputChange, IPost } from "../interfaces";
 import { useLoaderData, useNavigate } from "react-router-dom";
+import { apiBaseUrl } from "../config";
 
 export default function BlogPostForm() {
 
@@ -70,7 +71,7 @@ export default function BlogPostForm() {
 
 
             // Fetch
-            const baseUrl = "http://localhost:3000/posts/";
+            const baseUrl = `${apiBaseUrl}/posts/`;
             const detail = post ? `${post._id}/edit` : "new";
 
             const method = post ? "PUT" : "POST";

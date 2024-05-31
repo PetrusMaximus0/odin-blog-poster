@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { ICategory, IInputChange } from "../interfaces"
 import { FormEvent, useState } from "react";
+import { apiBaseUrl } from "../config";
 
 export default function CategoryCard({category} :{category: ICategory}) {
     const [currentState, setCurrentState] = useState<"idle"|"loading"|"edit"|"delete"|"error">("idle");
@@ -16,7 +17,7 @@ export default function CategoryCard({category} :{category: ICategory}) {
             navigate("/login");
         }
         try {
-            const url = `http://localhost:3000/categories/${category._id}`;
+            const url = `${apiBaseUrl}/categories/${category._id}`;
             const result = await fetch(url, {
                 mode: "cors",
                 method: "DELETE",
@@ -44,7 +45,7 @@ export default function CategoryCard({category} :{category: ICategory}) {
         e.preventDefault();
         setCurrentState("loading");
 
-        const url = `http://localhost:3000/categories/${category._id}`;
+        const url = `${apiBaseUrl}/categories/${category._id}`;
         const token = localStorage.getItem("login-token");
         if (!token) {
             navigate("/login");

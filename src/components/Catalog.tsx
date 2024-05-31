@@ -4,6 +4,7 @@ import Icon from '@mdi/react';
 import { mdiArrowLeft, mdiArrowRight } from '@mdi/js';
 import { useEffect} from 'react';
 import { IPost } from '../interfaces';
+import { apiBaseUrl } from '../config';
 
 export default function Catalog({fromQuery=false}) {
     const { state } = useNavigation();
@@ -17,7 +18,7 @@ export default function Catalog({fromQuery=false}) {
             navigate("/login");
         }
         try {
-            const result = await fetch(`http://localhost:3000/posts/${id}`, {
+            const result = await fetch(`${apiBaseUrl}/posts/${id}`, {
                 mode: "cors",
                 method: "DELETE",
                 headers: {
@@ -47,7 +48,7 @@ export default function Catalog({fromQuery=false}) {
     // Toggle post visibility
     const publishPost = async (id: string, action: "publish" | "hide") => {
         try {
-            const url = `http://localhost:3000/posts/${id}/${action}`;
+            const url = `${apiBaseUrl}/posts/${id}/${action}`;
 
             const token = localStorage.getItem("login-token");
 
