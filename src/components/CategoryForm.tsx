@@ -4,7 +4,7 @@ import CustomInput from "./CustomInput";
 import { FormEvent, useState } from "react";
 import CategoryCard from "./CategoryCard";
 
-export function CategoryForm() {
+export default function CategoryForm() {
     const { categories } = useLoaderData() as { categories: ICategory[] };
     const [error, setError] = useState<Error | null>(null);
     const [loading, setLoading] = useState(false);
@@ -23,7 +23,8 @@ export function CategoryForm() {
     const handleFormSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        console.log("Form Data", formData);
+        
+        //
         try {
             const url = `http://localhost:3000/categories/`;
             const token = localStorage.getItem("login-token");
@@ -84,7 +85,7 @@ export function CategoryForm() {
             <ul className="flex flex-col gap-2">
                 {
                     categories.map((cat: ICategory) => {
-                        return (<CategoryCard category={cat} /> )
+                        return (<CategoryCard key={cat._id} category={cat} /> )
                     })
                 }
             </ul>
