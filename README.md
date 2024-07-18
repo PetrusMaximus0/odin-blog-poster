@@ -4,7 +4,7 @@ This is a Content Management System solution for The Odin Project's [Blog API](h
 
 ## Live Demo
 
-[https://1682e295.odin-blog-poster.pages.dev](https://1682e295.odin-blog-poster.pages.dev)
+[https://odin-blog-poster.pages.dev](https://odin-blog-poster.pages.dev)
 
 ## See the other solutions
 
