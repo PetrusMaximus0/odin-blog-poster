@@ -16,7 +16,7 @@ const rootLoader = async () => {
         //    
         const token = localStorage.getItem("login-token");
         if (!token) {
-            redirect("/login");
+            return redirect("/login");            
         }
         
         //
@@ -31,7 +31,11 @@ const rootLoader = async () => {
 
         //
         if (result.status >= 400) {
-            throw new Error(`Server error with status, ${result.status}`);            
+            if (result.status === 401) {
+               return redirect("/login");
+            } else {
+                throw new Error(`Server error with status, ${result.status}`);
+            }
         }
 
         const { categories, posts } = await result.json();
@@ -41,13 +45,14 @@ const rootLoader = async () => {
         
         posts.forEach((post: IPost) => {
             //
-            const index = archives.findIndex((element) => element.date === new Date(post.date!).getFullYear());
+            const postYear = new Date(post.date!).getFullYear();
+            const index = archives.findIndex((element) => element.date === postYear );
             
             //
             if (index === -1) {
-                archives.push({ date: new Date(post.date!).getFullYear(), number: 1 });
+                archives.push({ date: postYear, number: 1 });
             } else {
-                archives[index] = {...archives[index], number: archives[index].number + 1}
+                archives[index].number += 1;
             }
             archives.sort((a:IArchive, b:IArchive) =>  b.date - a.date);
         })
@@ -89,7 +94,7 @@ const contentLoader = async ({params} :{ params: IContentLoader}) => {
     //    
     const token = localStorage.getItem("login-token");
     if (!token) {
-        redirect("/login");
+        return redirect("/login");
     }
 
 	const posts = await fetch(url, {
@@ -103,10 +108,8 @@ const contentLoader = async ({params} :{ params: IContentLoader}) => {
 		.then((res) => {
             if (res.status >= 400) {
                 if (res.status === 401 || res.status === 404) {
-                    redirect("/login");
+                    return redirect("/login");
                 } else {
-                    console.log("Throwing error!");
-                    redirect("/login");
                     throw new Error(`Server error with status, ${res.status}`);
                 }
 			}
@@ -116,10 +119,13 @@ const contentLoader = async ({params} :{ params: IContentLoader}) => {
         .then((res) => {
 			return res;
 		})
-		.catch((error) => console.error(error));
+        .catch((error) => {
+            console.error(error)
+            return redirect("/");
+        });
 
     const username = localStorage.getItem("login-username");
-    console.log("Returned the values!");
+    
     return {
         username: username,
         categories: posts.categories,
@@ -134,7 +140,7 @@ const editPostLoader = async ({ params }: { params: { id: string } }) => {
     try {
         const token = localStorage.getItem("login-token");
         if (!token) {
-            redirect("/");
+            return redirect("/");
         }
 
         const result = await fetch(`${apiBaseUrl}/posts/${params.id}/edit`, {
@@ -149,9 +155,9 @@ const editPostLoader = async ({ params }: { params: { id: string } }) => {
         //
         if (result.status >= 400) {
             if (result.status === 401) {
-                throw new Error(`${result.status}`);
+                return redirect("/login");
             }
-            throw new Error("Access error "+`${result.status}`);
+            throw new Error(`Server error with status, ${result.status}`);
         }
         //
         const response = await result.json();
@@ -160,7 +166,7 @@ const editPostLoader = async ({ params }: { params: { id: string } }) => {
     //
     } catch (error) {
         console.error(error);
-        redirect("/");
+        return redirect("/");
     }
 }
 
@@ -183,17 +189,18 @@ const categoriesLoader = async () => {
         return({categories: response.categories})
 
     } catch (error) {
-        redirect("/");
+        console.error(error);
+        return redirect("/");
     }
 }
 
 const blogpostLoader = async ({ params }:{params: {id: string } }) => {
     const token = localStorage.getItem("login-token");
     if (!token) {
-        redirect("/");
+        return redirect("/");
     }
-    
-    return fetch(`${apiBaseUrl}/posts/${params.id}/admin`, {
+
+    return await fetch(`${apiBaseUrl}/posts/${params.id}/admin`, {
 		method: 'GET',
 		mode: 'cors',
 		headers: {
@@ -202,15 +209,19 @@ const blogpostLoader = async ({ params }:{params: {id: string } }) => {
 		},
 	})
 		.then((res) => {
-			if (res.status >= 400) {
+            if (res.status >= 400) {
+                if (res.status === 401) {
+                    return redirect("/login");
+                }
 				throw new Error(`Server error with status: ${res.status}`);
 			}
 			return res.json();
 		})
 		.then((res) => res)
-		.catch((error) => {
-			console.error(error);
-		});
+        .catch((error) => {
+            console.error(error);
+            return redirect("/");
+        });
 };
 
 const routes = [
