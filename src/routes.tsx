@@ -13,12 +13,19 @@ import { apiBaseUrl } from "./config";
 
 const rootLoader = async () => {
     try {
+        //    
+        const token = localStorage.getItem("login-token");
+        if (!token) {
+            redirect("/login");
+        }
+        
         //
         const result = await fetch(`${apiBaseUrl}/posts/admin/shortlist`, {
             method: "GET",
             mode: "cors",
             headers: {
                 "content-type": "application/json",
+                Authorization : `Bearer ${token}`,
             }
         })
 
@@ -103,15 +110,16 @@ const contentLoader = async ({params} :{ params: IContentLoader}) => {
                     throw new Error(`Server error with status, ${res.status}`);
                 }
 			}
-			return res.json();
+            
+            return res.json();
 		})
-		.then((res) => {
+        .then((res) => {
 			return res;
 		})
 		.catch((error) => console.error(error));
 
     const username = localStorage.getItem("login-username");
-
+    console.log("Returned the values!");
     return {
         username: username,
         categories: posts.categories,
@@ -208,8 +216,7 @@ const blogpostLoader = async ({ params }:{params: {id: string } }) => {
 const routes = [
     {
         path: "/",
-        element:
-            <ProtectedRoute />,
+        element: <ProtectedRoute />,
         errorElement: <div>Woops, there seems to be an error</div>,
         children: [            
             {
