@@ -1,6 +1,6 @@
 # Blog Content Management
 
-This is a Content Management System solution for The Odin Project's [Blog API](https://www.theodinproject.com/lessons/nodejs-blog-api).
+This is a Content Management System solution for The Odin Project's [Blog API](https://www.theodinproject.com/lessons/node-path-nodejs-blog-api).
 
 ## Live Demo
 
