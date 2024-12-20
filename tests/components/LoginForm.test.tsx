@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import LoginForm from "../../src/components/LoginForm";
 import { Mock } from "vitest";
 import { act } from "react";
+import { apiBaseUrl } from "../../src/config";
 
 describe("Login", () => {
     const route = [        
@@ -97,7 +98,7 @@ describe("Login", () => {
             await user.click(button);
             
             // Fetch should be called with the correct options.
-            expect(fetch).toHaveBeenCalledWith("http://localhost:3000/users/login", {
+            expect(fetch).toHaveBeenCalledWith(`${apiBaseUrl}/users/login`, {
                 method: "POST",
                 mode: "cors",
                 headers: {

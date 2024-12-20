@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event"
 import { createMemoryRouter, RouterProvider } from "react-router-dom"
 import { server } from "../mocks/server"
 import { http, HttpResponse } from "msw";
+import { apiBaseUrl } from "../../src/config"
 
 describe("CreateUser", () => {
     const route = [        
@@ -102,7 +103,7 @@ describe("CreateUser", () => {
             
             // Set up the fetch mock
             server.use(
-                    http.post("http://localhost:3000/users/new", async () => {
+                    http.post(`${apiBaseUrl}/users/new`, async () => {
 
                     // Read the intercepted request body as JSON
                     const response = HttpResponse.json({error: "not ok"},{status: 403})
@@ -140,7 +141,7 @@ describe("CreateUser", () => {
         })
 
         it("fetch returns an error", async () => {
-            server.use(http.post("/users/new", () => {
+            server.use(http.post(`${apiBaseUrl}/users/new`, () => {
                 return HttpResponse.error();
             }))
 
