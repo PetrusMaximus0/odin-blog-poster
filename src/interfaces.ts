@@ -22,9 +22,9 @@ export interface IPost {
     timeToRead: string,
     hidden: string,
     headerImage: string,
+    categories: string[],    
     date?: Date,
     comments?: IComment[],
-    categories: string[],    
 }
 
 export interface IUser {
