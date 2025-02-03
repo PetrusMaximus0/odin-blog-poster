@@ -19,11 +19,8 @@ export default function CustomInput({handleInputChange, value, name, required, i
                 </button>
             }
             {
-                inputType === "textarea" && ( required && <textarea className="w-full pr-7 pl-2 bg-slate-700 white" aria-label={`${name}-input`} required onChange={handleInputChange} name={name} id={name} value={value} />
-                    || <textarea className="w-full pr-7 pl-2 bg-slate-700 white" aria-label={`${name}-input`} onChange={handleInputChange} name={name} id={name} value={value} />
-                )
-                || (required && <input aria-label={`${name}-input`} required onChange={handleInputChange} value={value} className="w-full pr-7 pl-2 bg-slate-700" type={hideInput ? inputType : "text"} name={name} id={name} />
-            || <input aria-label={`${name}-input`} onChange={handleInputChange} value={value} className="w-full pr-7 pl-2 bg-slate-700" type={hideInput ? inputType : "text"} name={name} id={name} />)
+                inputType === "textarea" && <textarea className="w-full pr-7 pl-2 bg-slate-700 white" aria-label={`${name}-input`} required={required} onChange={handleInputChange} name={name} id={name} value={value} />
+                || <input aria-label={`${name}-input`} required={required} onChange={handleInputChange} value={value} className="w-full pr-7 pl-2 bg-slate-700" type={hideInput ? inputType : "text"} name={name} id={name} />
             }
         </div>
 
