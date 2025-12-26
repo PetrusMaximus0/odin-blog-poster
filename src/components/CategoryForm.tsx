@@ -54,7 +54,6 @@ export default function CategoryForm() {
             navigate("/posts/manageCategories");
 
         } catch (error) {
-            console.log(error);
             setLoading(false);
             setError(error as Error);
         }
